@@ -14,10 +14,9 @@ export default {
     }
 
     const url = new URL(request.url);
-    let targetUrl = url.search.length > 0 ? url.search.slice(1) : null;
-
+    let targetUrl = url.search.get("url");
     if (!targetUrl) {
-      return new Response("Send a request like: ?https://example.com", { status: 400 });
+      return new Response("Send a request like: ?url=https://example.com", { status: 400 });
     }
 
     if (request.method === "OPTIONS") {
@@ -31,15 +30,13 @@ export default {
       });
     }
 
-    const modifiedRequest = new Request(targetUrl, {
-      method: request.method,
-      headers: request.headers,
-      body: request.body,
-      redirect: request.redirect,
-    });
-
     try {
-      const response = await fetch(modifiedRequest);
+      const response = await fetch(targetUrl, {
+        method: request.method,
+        headers: request.headers,
+        body: request.body,
+        redirect: request.redirect,
+      });
       const newHeaders = new Headers(response.headers);
 
       newHeaders.set("Access-Control-Allow-Origin", origin);
