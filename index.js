@@ -14,7 +14,7 @@ export default {
     }
 
     const url = new URL(request.url);
-    let targetUrl = url.search.get("url");
+    let targetUrl = url.searchParams.get("url");
     if (!targetUrl) {
       return new Response("Send a request like: ?url=https://example.com", { status: 400 });
     }
