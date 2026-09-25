@@ -1,3 +1,5 @@
+import { env } from "cloudflare:workers";
+
 export default {
   async fetch(request) {
     const origin = request.headers.get("Origin");
