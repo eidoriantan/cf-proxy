@@ -30,6 +30,15 @@ export default {
       });
     }
 
+    for (let i = 0; i < request.headers.entries().length; i++) {
+      const [name, value] = request.headers.entries()[i];
+      if (name.toLowerCase().startsWith("x-proxy-")) {
+        const originalHeaderName = name.substring(8);
+        request.headers.set(originalHeaderName, value);
+        request.headers.delete(name);
+      }
+    }
+
     try {
       const response = await fetch(targetUrl, {
         method: request.method,
