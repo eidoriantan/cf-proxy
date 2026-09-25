@@ -7,7 +7,8 @@ export default {
       ? env.ALLOWED_ORIGINS.split(",").map(o => o.trim()) 
       : [];
 
-    const isAllowed = allowedOrigins.includes(origin);
+    const allowedAll = allowedOrigins.includes("*");
+    const isAllowed = allowedAll || allowedOrigins.includes(origin);
     if (!origin || !isAllowed) {
       return new Response("CORS Forbidden: Origin not allowed.", { status: 403 });
     }
