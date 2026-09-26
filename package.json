@@ -1,0 +1,25 @@
+{
+  "name": "cf-proxy",
+  "version": "1.0.0",
+  "description": "CORS proxy in a CloudFlare worker.",
+  "private": true,
+  "bugs": "https://github.com/eidoriantan/cf-proxy/issues",
+  "homepage": "https://github.com/eidoriantan/cf-proxy#readme",
+  "license": "MIT",
+  "author": {
+    "name": "Adriane Justine Tan",
+    "url": "https://eidoriantan.com",
+    "email": "me@eidoriantan.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eidoriantan/cf-proxy.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "wrangler": "^4.140.0"
+  }
+}

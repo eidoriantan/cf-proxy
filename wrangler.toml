@@ -1,3 +1,6 @@
 name = "cf-proxy"
 main = "index.js"
 compatibility_date = "2026-09-25"
+
+[vars]
+ALLOWED_ORIGINS = "*"
