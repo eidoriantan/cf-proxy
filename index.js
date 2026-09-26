@@ -9,7 +9,7 @@ export default {
 
     const allowedAll = allowedOrigins.includes("*");
     const isAllowed = allowedAll || allowedOrigins.includes(origin);
-    if (!origin || !isAllowed) {
+    if (!isAllowed) {
       return new Response("CORS Forbidden: Origin not allowed.", { status: 403 });
     }
 
@@ -30,24 +30,25 @@ export default {
       });
     }
 
-    for (let i = 0; i < request.headers.entries().length; i++) {
-      const [name, value] = request.headers.entries()[i];
+    const newReqHeaders = new Headers();
+    for (const [name, value] of request.headers.entries()) {
       if (name.toLowerCase().startsWith("x-proxy-")) {
         const originalHeaderName = name.substring(8);
-        request.headers.set(originalHeaderName, value);
-        request.headers.delete(name);
+        newReqHeaders.set(originalHeaderName, value);
+      } else {
+        newReqHeaders.set(name, value);
       }
     }
 
     try {
       const response = await fetch(targetUrl, {
         method: request.method,
-        headers: request.headers,
+        headers: newReqHeaders,
         body: request.body,
         redirect: request.redirect,
       });
-      const newHeaders = new Headers(response.headers);
 
+      const newHeaders = new Headers(response.headers);
       newHeaders.set("Access-Control-Allow-Origin", origin);
       newHeaders.set("Access-Control-Allow-Credentials", "true");
 
