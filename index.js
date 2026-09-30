@@ -3,8 +3,8 @@ import { env } from "cloudflare:workers";
 export default {
   async fetch(request) {
     const origin = request.headers.get("Origin");
-    const allowedOrigins = env.ALLOWED_ORIGINS 
-      ? env.ALLOWED_ORIGINS.split(",").map(o => o.trim()) 
+    const allowedOrigins = env.ALLOWED_ORIGINS
+      ? env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
       : [];
 
     const allowedAll = allowedOrigins.includes("*");
@@ -28,6 +28,26 @@ export default {
           "Access-Control-Max-Age": "86400",
         },
       });
+    }
+
+    // --- Rate limiting (per client IP) ---
+    // Runs after the origin check and OPTIONS handling, so preflights and
+    // disallowed origins don't consume quota.
+    if (env.RATE_LIMITER) {
+      const clientIp = request.headers.get("CF-Connecting-IP") || "unknown";
+      const { success } = await env.RATE_LIMITER.limit({ key: clientIp });
+      if (!success) {
+        // CORS headers are included so the browser can read the 429
+        // instead of surfacing an opaque CORS error.
+        return new Response("Too Many Requests: slow down and retry shortly.", {
+          status: 429,
+          headers: {
+            "Retry-After": "60",
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Credentials": "true",
+          },
+        });
+      }
     }
 
     const newReqHeaders = new Headers();

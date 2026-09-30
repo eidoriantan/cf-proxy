@@ -4,3 +4,11 @@ compatibility_date = "2026-09-25"
 
 [vars]
 ALLOWED_ORIGINS = "*"
+
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+
+  [ratelimits.simple]
+  limit = 100
+  period = 60
